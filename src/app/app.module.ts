@@ -17,6 +17,7 @@ import { environment } from '../environments/environment';
 import { CurrentConditionsItemComponent } from './current-conditions-item/current-conditions-item.component';
 import { CurrentConditionsContainerComponent } from './current-conditions-container/current-conditions-container.component';
 import { getWeatherConditionIconUrlPipe } from './get-weather-icon-url.pipe';
+import { ReactiveStatusButtonComponent } from './reactive-status-button/reactive-status-button.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { getWeatherConditionIconUrlPipe } from './get-weather-icon-url.pipe';
     CurrentConditionsComponent,
     MainPageComponent,
     CurrentConditionsItemComponent,
-    getWeatherConditionIconUrlPipe
+    getWeatherConditionIconUrlPipe,
+    ReactiveStatusButtonComponent
   ],
   imports: [
     BrowserModule,

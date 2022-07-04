@@ -8,7 +8,7 @@ import { WeatherCondition } from 'app/weather-condition.types';
   styleUrls: ['./current-conditions-item.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CurrentConditionsItemComponent implements OnInit {
+export class CurrentConditionsItemComponent {
 
   private _location: WeatherCondition;
 
@@ -20,13 +20,6 @@ export class CurrentConditionsItemComponent implements OnInit {
   
   get location () {
     return this._location;
-  }
-
-
-  constructor(private router : Router) {
-  }
-
-  ngOnInit(): void {
   }
 
   removeLocation() {

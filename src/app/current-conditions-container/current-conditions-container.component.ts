@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {WeatherService} from "../weather.service";
 import {Router} from "@angular/router";
 import { Observable } from 'rxjs';

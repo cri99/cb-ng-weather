@@ -1,0 +1,17 @@
+<ng-container *ngIf = "{
+    currentStatusValue: currentStatus$ | async
+} as obs">
+    <button [class] = "'button-status-' + obs.currentStatusValue">
+        <ng-container *ngSwitch="obs.currentStatusValue">
+            <ng-container *ngSwitchCase="BUTTON_STATUS.DEFAULT">
+                <ng-content  [slot] = "BUTTON_STATUS.DEFAULT"></ng-content>
+            </ng-container>
+            <ng-container *ngSwitchCase="BUTTON_STATUS.WORKING">
+                <ng-content  [slot] = "BUTTON_STATUS.WORKING"></ng-content>
+            </ng-container>
+            <ng-container *ngSwitchCase="BUTTON_STATUS.DONE">
+                <ng-content  [slot] = "BUTTON_STATUS.DONE"></ng-content>
+            </ng-container>
+        </ng-container>     
+    </button>
+</ng-container>
