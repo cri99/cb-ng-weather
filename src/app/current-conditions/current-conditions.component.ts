@@ -1,31 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import {WeatherService} from "../weather.service";
-import {LocationService} from "../location.service";
-import {Router} from "@angular/router";
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TrackByFunction } from '@angular/core';
 import { WeatherCondition } from 'app/weather-condition.types';
 
 @Component({
   selector: 'app-current-conditions',
   templateUrl: './current-conditions.component.html',
-  styleUrls: ['./current-conditions.component.css']
+  styleUrls: ['./current-conditions.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CurrentConditionsComponent implements OnInit {
+export class CurrentConditionsComponent {
 
-  currentConditions$: Observable<WeatherCondition[]>;
+  @Output() onShowForecast = new EventEmitter();
+  @Output() onRemoveWeatherCondition = new EventEmitter();
 
-  constructor(private weatherService : WeatherService, private locationService : LocationService, private router : Router) {
+  private _currentConditions: WeatherCondition[];
+
+  @Input() set currentConditions (newWeatherConditions: WeatherCondition[]) {
+    this._currentConditions = newWeatherConditions;  
   }
 
-  ngOnInit(): void {
-    this.currentConditions$ = this.weatherService.getCurrentConditions();
+  get currentConditions() {
+    return this._currentConditions;
   }
 
-  getCurrentConditions() {
-    return this.weatherService.getCurrentConditions();
+  constructor() {
   }
 
   showForecast(zipcode : string){
-    this.router.navigate(['/forecast', zipcode])
+    this.onShowForecast.emit(zipcode);
+  }
+
+  removeLocation(zipCode: string) {
+    this.onRemoveWeatherCondition.emit(zipCode);
+  }
+
+  weatherConditionTrackByFn: TrackByFunction<WeatherCondition> = (index, weatherCondition) => {
+    return weatherCondition.zip;
   }
 }

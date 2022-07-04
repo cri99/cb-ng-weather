@@ -1,16 +1,17 @@
-import { Component } from '@angular/core';
-import {LocationService} from "../location.service";
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { WeatherService } from 'app/weather.service';
 
 @Component({
   selector: 'app-zipcode-entry',
-  templateUrl: './zipcode-entry.component.html'
+  templateUrl: './zipcode-entry.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZipcodeEntryComponent {
 
-  constructor(private service : LocationService) { }
+  constructor(private weatherService : WeatherService) { }
 
   addLocation(zipcode : string){
-    this.service.addLocation(zipcode);
+    this.weatherService.addCurrentConditions(zipcode);
   }
 
 }

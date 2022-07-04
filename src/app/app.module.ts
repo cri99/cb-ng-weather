@@ -14,14 +14,20 @@ import {routing} from "./app.routing";
 import {HttpClientModule} from "@angular/common/http";
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { CurrentConditionsItemComponent } from './current-conditions-item/current-conditions-item.component';
+import { CurrentConditionsContainerComponent } from './current-conditions-container/current-conditions-container.component';
+import { getWeatherConditionIconUrlPipe } from './get-weather-icon-url.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
+    CurrentConditionsContainerComponent,
     ZipcodeEntryComponent,
     ForecastsListComponent,
     CurrentConditionsComponent,
-    MainPageComponent
+    MainPageComponent,
+    CurrentConditionsItemComponent,
+    getWeatherConditionIconUrlPipe
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,6 @@
+<app-current-conditions
+  [currentConditions] = "currentConditions$ | async"
+  (onRemoveWeatherCondition) = "removeLocation($event)"
+  (onShowForecast) = "showForecast($event)"
+></app-current-conditions>
+
