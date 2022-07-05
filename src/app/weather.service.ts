@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, from, interval, Observable, OperatorFunction, Subject} from 'rxjs';
-import {filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
+import {BehaviorSubject, from, interval, Observable, of, OperatorFunction, Subject, throwError} from 'rxjs';
+import {filter, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import {HttpClient} from '@angular/common/http';
 import { WeatherCondition, WeatherConditionData } from './weather-condition.types';
@@ -15,8 +15,6 @@ export class WeatherService {
 
   private static POLLING_RATE = 60 * 1000;
 
-  private _addCurrentConditionEvent$ = new Subject<string>();
-  private _removeCurrentConditionEvent$ = new Subject<string>();
 
   private _currentConditions$ = new BehaviorSubject<WeatherCondition[]>([]);
 
@@ -24,15 +22,15 @@ export class WeatherService {
     private http: HttpClient,
     private locationService: LocationService
   ) {
-    this.setupEventListeners();
     this.setupWeatherConditionsPolling();
     this.initializeSavedLocations();
   }
 
   private initializeSavedLocations() {
-    from(this.locationService.locations).subscribe(zipCode => {
-      this.addCurrentConditions(zipCode);
-    })
+    from(this.locationService.locations)
+      .pipe(
+        mergeMap(zipcode => this.addCurrentConditions(zipcode))
+      ).subscribe();
   }
 
   private setupWeatherConditionsPolling() {
@@ -46,48 +44,9 @@ export class WeatherService {
     });
   }
 
-  private setupEventListeners() {
-    this.onAddCurrentConditionsEvent();
-    this.onRemoveCurrentConditionsEvent();
-  }
 
-  private onAddCurrentConditionsEvent() {
-    this._addCurrentConditionEvent$.pipe(
-      filter(Boolean),
-      this.filterIfZipCodeAlreadyExist(),
-      mergeMap((zipCode: string) => this.retrieveWeatherConditionByZipCode(zipCode).pipe(
-        map(weatherCondition => ({weatherCondition, zipCode}))
-      )),
-    ).subscribe(({weatherCondition, zipCode}) => {
-      const currentConditions = [...this._currentConditions$.value];
-      currentConditions.push(weatherCondition); 
-      this._currentConditions$.next(currentConditions);
-      this.locationService.addLocation(zipCode);
-    });
-  }
 
-  private filterIfZipCodeAlreadyExist(): OperatorFunction<string, string> {
-    return (sourceObs: Observable<string>) => 
-      sourceObs.pipe(
-        withLatestFrom(this._currentConditions$),
-        filter(([zipCode, weatherConditions]) =>  {
-          return weatherConditions.every(condition => condition.zip !== zipCode);
-        }),
-        map(([zipCode]) => zipCode)
-      )
-    
-  }
 
-  private onRemoveCurrentConditionsEvent() {
-    this._removeCurrentConditionEvent$.pipe(
-      filter(Boolean),
-    ).subscribe((zipCodeToRemove : string) => {
-      let currentConditions = [...this._currentConditions$.value];
-      currentConditions = currentConditions.filter(condition => condition.zip !== zipCodeToRemove);
-      this._currentConditions$.next(currentConditions);
-      this.locationService.removeLocation(zipCodeToRemove);
-    });
-  }
 
 
   private retrieveWeatherConditionByZipCode(zipCode: string): Observable<WeatherCondition> {
@@ -101,8 +60,26 @@ export class WeatherService {
     )
   }
 
-  addCurrentConditions(zipcode: string): void {
-    this._addCurrentConditionEvent$.next(zipcode);
+  addCurrentConditions(zipCode: string): Observable<WeatherCondition> {
+    return of(zipCode).pipe(
+      withLatestFrom(this._currentConditions$),
+      switchMap(([zipCode, weatherConditions]) => {
+        const isCityAlreadyIncluded = weatherConditions.some(condition => condition.zip === zipCode);
+        if(isCityAlreadyIncluded) {
+          return throwError("cityAlreadyIncluded");
+        }
+
+        return this.retrieveWeatherConditionByZipCode(zipCode).pipe(
+          map(newWeatherCondition => ({newWeatherCondition, allCurrentConditions: weatherConditions}))
+        )
+      }),
+      map(({newWeatherCondition, allCurrentConditions}) => {
+        allCurrentConditions.push(newWeatherCondition); 
+        this._currentConditions$.next([...allCurrentConditions]);
+        this.locationService.addLocation(newWeatherCondition.zip);
+        return newWeatherCondition;
+      })
+    )
   }
 
   updateCurrentConditions(newWeatherCondition: WeatherCondition)
@@ -118,8 +95,13 @@ export class WeatherService {
     this._currentConditions$.next(currentConditions);
   }
 
-  removeCurrentConditions(zipcode: string): void {
-    this._removeCurrentConditionEvent$.next(zipcode);
+  removeCurrentConditions(zipCodeToRemove: string): void {
+    if(zipCodeToRemove) {
+      let currentConditions = [...this._currentConditions$.value];
+      currentConditions = currentConditions.filter(condition => condition.zip !== zipCodeToRemove);
+      this._currentConditions$.next(currentConditions);
+      this.locationService.removeLocation(zipCodeToRemove);
+    }
   }
 
   getCurrentConditions(): Observable<WeatherCondition[]> {

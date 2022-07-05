@@ -11,7 +11,7 @@ export class ZipcodeEntryComponent {
   constructor(private weatherService : WeatherService) { }
 
   addLocation(zipcode : string){
-    this.weatherService.addCurrentConditions(zipcode);
+    this.weatherService.addCurrentConditions(zipcode).subscribe(console.log);
   }
 
 }
