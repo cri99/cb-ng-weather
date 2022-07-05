@@ -4,7 +4,32 @@
     [(zipCode)] = "newWeatherDataEntry.zipCode"
   ></app-zipcode-entry>
 
+  <!---
   <button class="btn btn-primary" (click)="addLocation()" >
     Add location
   </button>
+-->
+
+  <app-reactive-status-button
+    [asyncTaskFn]="addLocationFn"
+    [defaultContent] = "defaultContent"
+    [workingContent] = "workingContent"
+    [doneContent] = "doneContent"
+    (statusChange)="onButtonStatusChanged($event)"
+  >  </app-reactive-status-button>
+
+  <i class="fas fa-star pr-2" aria-hidden="true"></i>
+  <ng-template #defaultContent>
+    <button class = "btn btn-primary" [disabled]="!newWeatherDataEntry.zipCode">Add Location</button>
+  </ng-template>
+  <ng-template #workingContent>
+    <button class = "btn btn-primary" disabled>
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Adding...
+    </button>
+  </ng-template>
+  <ng-template #doneContent>
+    <button class = "btn btn-success">  <i class="bi bi-check2-circle"></i>  Done!</button>
+  </ng-template>
+
 </div>

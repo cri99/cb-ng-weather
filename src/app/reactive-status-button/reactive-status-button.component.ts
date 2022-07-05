@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from "@angular/core";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { filter,delay, mapTo, } from "rxjs/operators";
+import { filter,delay, mapTo, skip } from "rxjs/operators";
 
 @Component({
     selector: 'app-reactive-status-button',
@@ -10,18 +10,29 @@ import { filter,delay, mapTo, } from "rxjs/operators";
 })
 export class ReactiveStatusButtonComponent implements OnInit {
     readonly BUTTON_STATUS = BUTTON_STATUS;
-    @Input() asyncTask$: Observable<any> = of(void 0);
+
+    @Input() asyncTaskFn: () => Observable<any> = () => of(void 0);
     @Output() statusChange = new EventEmitter<ButtonStatus>();
 
     currentStatus$: BehaviorSubject<ButtonStatus> = new BehaviorSubject<ButtonStatus>(BUTTON_STATUS.DEFAULT);
     onDoneStatus$: Observable<void>;
+
+
+
+    @Input() defaultContent: TemplateRef<any>;
+    @Input() workingContent: TemplateRef<any>;
+    @Input() doneContent: TemplateRef<any>;
+
 
     ngOnInit(): void {
         this.setupOnStatusChangeEventListener();
     }
 
     private setupOnStatusChangeEventListener() {
-        this.onDoneStatus$ = this.currentStatus$.pipe(filter(status => status === BUTTON_STATUS.DONE), mapTo(void 0));
+        this.onDoneStatus$ = this.currentStatus$.pipe(
+            filter(status => status === BUTTON_STATUS.DONE), 
+            mapTo(void 0)
+        );
         
         this.onDoneStatus$.pipe(
             delay(500)
@@ -29,8 +40,7 @@ export class ReactiveStatusButtonComponent implements OnInit {
             this.changeCurrentStatus(BUTTON_STATUS.DEFAULT);
         });
 
-
-        this.currentStatus$.asObservable().subscribe(newStatus => {
+        this.currentStatus$.asObservable().pipe(skip(1)).subscribe(newStatus => {
             this.statusChange.emit(newStatus);
         });
 
@@ -39,9 +49,13 @@ export class ReactiveStatusButtonComponent implements OnInit {
 
     executeTask(): void {
         this.changeCurrentStatus(BUTTON_STATUS.WORKING);
-        this.asyncTask$.subscribe({
+        this.asyncTaskFn().subscribe({
             complete: () => {
                 this.changeCurrentStatus(BUTTON_STATUS.DONE);
+            },
+            error: (error) => {
+                this.changeCurrentStatus(BUTTON_STATUS.DEFAULT);
+                throw new Error(error);
             }
         })
     }

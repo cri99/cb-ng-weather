@@ -1,17 +1,17 @@
 <ng-container *ngIf = "{
     currentStatusValue: currentStatus$ | async
 } as obs">
-    <button [class] = "'button-status-' + obs.currentStatusValue">
-        <ng-container *ngSwitch="obs.currentStatusValue">
+    <div class = "button-container" [class] = "'button-status-' + obs.currentStatusValue" (click) = "executeTask()">
+        <ng-container [ngSwitch]="obs.currentStatusValue">
             <ng-container *ngSwitchCase="BUTTON_STATUS.DEFAULT">
-                <ng-content  [select] = "BUTTON_STATUS.DEFAULT"></ng-content>
+                <ng-container *ngTemplateOutlet="defaultContent" ></ng-container>
             </ng-container>
             <ng-container *ngSwitchCase="BUTTON_STATUS.WORKING">
-                <ng-content  [select] = "BUTTON_STATUS.WORKING"></ng-content>
+                <ng-container *ngTemplateOutlet="workingContent"></ng-container>
             </ng-container>
             <ng-container *ngSwitchCase="BUTTON_STATUS.DONE">
-                <ng-content  [select] = "BUTTON_STATUS.DONE"></ng-content>
+                <ng-container *ngTemplateOutlet="doneContent"></ng-container>
             </ng-container>
         </ng-container>     
-    </button>
+    </div>
 </ng-container>

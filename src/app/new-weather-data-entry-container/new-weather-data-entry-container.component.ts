@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { WeatherService } from 'app/weather.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-new-weather-data-entry-container',
@@ -19,9 +20,15 @@ export class NewWeatherDataEntryContainerComponent {
 
   constructor(private weatherService : WeatherService) { }
 
-  addLocation(){
-    this.weatherService.addCurrentConditions(this.newWeatherDataEntry.zipCode).subscribe(console.log);
-    this.newWeatherDataEntry.zipCode = "";
+  addLocationFn = () => {
+    return this.weatherService.addCurrentConditions(this.newWeatherDataEntry.zipCode).pipe(
+      tap(() => {
+        this.newWeatherDataEntry.zipCode = "";
+      })  
+    )
   }
 
+  onButtonStatusChanged(status) {
+    console.log("Reactive Button Status Changed:", status);
+  }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, from, interval, Observable, of, OperatorFunction, Subject, throwError} from 'rxjs';
-import {filter, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import {delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import {HttpClient} from '@angular/common/http';
 import { WeatherCondition, WeatherConditionData } from './weather-condition.types';
@@ -64,9 +64,13 @@ export class WeatherService {
     return of(zipCode).pipe(
       withLatestFrom(this._currentConditions$),
       switchMap(([zipCode, weatherConditions]) => {
+        if(!zipCode) {
+          return throwError("zipCode is undefined!");
+        }
+
         const isCityAlreadyIncluded = weatherConditions.some(condition => condition.zip === zipCode);
         if(isCityAlreadyIncluded) {
-          return throwError("cityAlreadyIncluded");
+          return throwError("City Already Included!");
         }
 
         return this.retrieveWeatherConditionByZipCode(zipCode).pipe(
@@ -86,7 +90,7 @@ export class WeatherService {
   updateCurrentConditions(newWeatherCondition: WeatherCondition, zipCode?: string) {
     const zipCodeOfElToUpdate = zipCode || newWeatherCondition.zip;
     if(!zipCodeOfElToUpdate) {
-
+      
     }
 
     let currentConditions = [...this._currentConditions$.value];
