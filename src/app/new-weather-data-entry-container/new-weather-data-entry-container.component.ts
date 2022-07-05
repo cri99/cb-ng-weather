@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 @Component({
   selector: 'app-new-weather-data-entry-container',
   templateUrl: './new-weather-data-entry-container.component.html',
+  styleUrls: ['./new-weather-data-entry-container.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewWeatherDataEntryContainerComponent {

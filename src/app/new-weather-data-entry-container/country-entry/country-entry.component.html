@@ -1,0 +1,14 @@
+<ng-container *ngIf = "{filteredCountriesVal: filteredCountries$ | async} as obs">
+ 
+    <h2>Enter a Country:</h2>
+    <input type="text" #countryNameInput (mouseenter)="showCountryList = true" (mouseleave)="showCountryList = false"
+      [ngModel] = "countryCode" (ngModelChange)="countryInputChanged($event)" 
+      placeholder="Country" class="form-control">
+    <div class="country-list" name="country" id="country" *ngIf = "">
+      <option value="" disabled selected>Select Country</option>
+      <option *ngFor="let country of obs.filteredCountriesVal" [value]="country">{{country.name}}</option>
+    </div>
+
+  
+</ng-container>
+
