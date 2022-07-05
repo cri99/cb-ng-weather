@@ -18,6 +18,7 @@ import { CurrentConditionsItemComponent } from './current-conditions-item/curren
 import { CurrentConditionsContainerComponent } from './current-conditions-container/current-conditions-container.component';
 import { getWeatherConditionIconUrlPipe } from './get-weather-icon-url.pipe';
 import { ReactiveStatusButtonComponent } from './reactive-status-button/reactive-status-button.component';
+import { NewWeatherDataEntryContainerComponent } from './new-weather-data-entry-container/new-weather-data-entry-container.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ReactiveStatusButtonComponent } from './reactive-status-button/reactive
     MainPageComponent,
     CurrentConditionsItemComponent,
     getWeatherConditionIconUrlPipe,
-    ReactiveStatusButtonComponent
+    ReactiveStatusButtonComponent,
+    NewWeatherDataEntryContainerComponent
   ],
   imports: [
     BrowserModule,

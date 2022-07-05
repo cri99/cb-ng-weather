@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { WeatherService } from 'app/weather.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-zipcode-entry',
@@ -8,10 +7,8 @@ import { WeatherService } from 'app/weather.service';
 })
 export class ZipcodeEntryComponent {
 
-  constructor(private weatherService : WeatherService) { }
+  @Input() zipCode: string;
+  @Output() zipCodeChange = new EventEmitter<string>();
 
-  addLocation(zipcode : string){
-    this.weatherService.addCurrentConditions(zipcode).subscribe(console.log);
-  }
-
+  constructor() { }
 }
