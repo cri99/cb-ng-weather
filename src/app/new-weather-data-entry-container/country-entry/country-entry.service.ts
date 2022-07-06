@@ -1,13 +1,17 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
-import { Country, CountryResult } from "./countries.types";
+import { Country } from "./countries.types";
 import { ALL_COUNTRIES } from "./country-data-store";
 
 @Injectable()
 export class CountryEntryService{
-    private static ALL_COUNTRIES = ALL_COUNTRIES;
     private _filteredCountries$ = new BehaviorSubject<Country[]>(ALL_COUNTRIES);
 
+
+    findCountryByCode(countryCode: string) {
+        return ALL_COUNTRIES.find(country => (country.code.toLowerCase() === countryCode.toLowerCase()) 
+                                            || (country.code3.toLowerCase() === countryCode.toLowerCase()));
+    }
 
     getFilteredCountries$() : Observable<Country[]> {
         return this._filteredCountries$.asObservable();

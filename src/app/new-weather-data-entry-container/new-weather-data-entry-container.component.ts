@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { DEFAULT_LANGUAGE } from 'app/shared/app.constants';
+import { WeatherConditionInput } from 'app/weather-condition.types';
 import { WeatherService } from 'app/weather.service';
 import { tap } from 'rxjs/operators';
 
@@ -10,19 +12,16 @@ import { tap } from 'rxjs/operators';
 })
 export class NewWeatherDataEntryContainerComponent {
 
-  newWeatherDataEntry : {
-    zipCode: string;
-    cityCode: string; 
-  } = {
+  newWeatherDataEntry : WeatherConditionInput = {
     zipCode: "",
-    cityCode: "it"
+    countryCode: DEFAULT_LANGUAGE
   }
 
 
   constructor(private weatherService : WeatherService) { }
 
   addLocationFn = () => {
-    return this.weatherService.addCurrentConditions(this.newWeatherDataEntry.zipCode).pipe(
+    return this.weatherService.addCurrentConditions(this.newWeatherDataEntry).pipe(
       tap(() => {
         this.newWeatherDataEntry.zipCode = "";
       })  

@@ -61,3 +61,7 @@ export interface WeatherCondition {
     data: WeatherConditionData;
 }
 
+export interface WeatherConditionInput {
+    zipCode: string;
+    countryCode: string;  
+}

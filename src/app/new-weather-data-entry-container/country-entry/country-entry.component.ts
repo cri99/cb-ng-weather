@@ -11,8 +11,15 @@ import { CountryEntryService } from './country-entry.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CountryEntryComponent implements OnInit {
+  countryName: string = "";
 
-  @Input() countryCode: string;
+  @Input() set countryCode(newCountryCode: string){
+    const countryResult = this.countryService.findCountryByCode(newCountryCode);
+    if(countryResult) {
+      this.countryInputChanged(countryResult.name);
+    }
+  }
+
   @Output() countryCodeChange = new EventEmitter<string>();
 
   filteredCountries$: Observable<Country[]>
@@ -26,8 +33,19 @@ export class CountryEntryComponent implements OnInit {
   }
 
 
+  onCountryInputFocus() {
+    this.showCountryList = true;
+  }
+
   countryInputChanged(countryName: string) {
+    this.countryName = countryName;
     this.countryService.updateCountryFilter(countryName);
+  }
+
+  onCountrySelected(selectedCountry: Country) {
+    this.countryInputChanged(selectedCountry.name);
+    this.showCountryList = false;
+    this.countryCodeChange.emit(selectedCountry.code);
   }
 
 }

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {WeatherService} from '../weather.service';
 import {ActivatedRoute} from '@angular/router';
 import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, withLatestFrom } from 'rxjs/operators';
 
 @Component({
   selector: 'app-forecasts-list',
@@ -12,14 +12,17 @@ import { switchMap } from 'rxjs/operators';
 })
 export class ForecastsListComponent {
 
-  zipcode: string;
   forecast$: Observable<any>;
 
   constructor(private weatherService: WeatherService, route : ActivatedRoute) {
+
     this.forecast$ = route.params.pipe(
-      switchMap(params => {
-        this.zipcode = params['zipcode'];
-        return weatherService.getForecast(this.zipcode);
+      withLatestFrom(route.queryParams),
+      switchMap(([routeParams, queryParams]) => {
+        const zipcode = routeParams['zipcode'];
+        const countryCode = queryParams['countryCode'];
+
+        return weatherService.getForecast(zipcode, countryCode);
       })
     );
   }

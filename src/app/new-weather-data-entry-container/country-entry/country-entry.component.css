@@ -1,4 +1,31 @@
+.country-entry-container{
+  width: 400px;
+}
+
 .country-list{
-  
-  max-height: 100px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 250px;
+  background: white;
+  z-index: 2;
+  position: absolute;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  box-shadow: 0px 0px 8px 0px grey;
+  width: 400px;
+}
+
+.country-list-item {
+  padding-bottom: 10px;
+  padding-top: 10px;
+  padding-left: 15px;
+  cursor: pointer;
+}
+
+.country-list-item:hover {
+  background: rgb(238, 238, 238);
+}
+
+.hide-country-list {
+  display: hidden;
 }

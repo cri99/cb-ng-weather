@@ -3,8 +3,10 @@ import {BehaviorSubject, from, interval, Observable, of, OperatorFunction, Subje
 import {delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import {HttpClient} from '@angular/common/http';
-import { WeatherCondition, WeatherConditionData } from './weather-condition.types';
+import { WeatherCondition, WeatherConditionData, WeatherConditionInput } from './weather-condition.types';
 import { LocationService } from './location.service';
+import { DEFAULT_LANGUAGE } from './shared/app.constants';
+import { UtilsService } from './utils.service';
 
 @Injectable()
 export class WeatherService {
@@ -12,7 +14,7 @@ export class WeatherService {
   static URL = 'http://api.openweathermap.org/data/2.5';
   static APPID = '5a4b2d457ecbef9eb2a71e480b947604';
   static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
-
+  
   private static POLLING_RATE = 60 * 1000;
 
 
@@ -37,20 +39,15 @@ export class WeatherService {
     interval(WeatherService.POLLING_RATE).pipe(
       withLatestFrom(this._currentConditions$),
       switchMap(([_, conditions]) => conditions),
-      mergeMap((weatherConditionToUpdate => this.retrieveWeatherConditionByZipCode(weatherConditionToUpdate.zip)))
+      mergeMap((({zip, data}) => this.retrieveWeatherCondition(zip, data.sys.country)))
     ).subscribe(newWeatherCondition => {
-      console.log("Updated data:", newWeatherCondition);
       this.updateCurrentConditions(newWeatherCondition);
     });
   }
 
 
-
-
-
-
-  private retrieveWeatherConditionByZipCode(zipCode: string): Observable<WeatherCondition> {
-    return this.http.get<WeatherConditionData>(`${WeatherService.URL}/weather?zip=${zipCode},it&units=metric&APPID=${WeatherService.APPID}`).pipe(
+  private retrieveWeatherCondition(zipCode: string, countryCode = DEFAULT_LANGUAGE): Observable<WeatherCondition> {
+    return this.http.get<WeatherConditionData>(`${WeatherService.URL}/weather?zip=${zipCode},${countryCode}&units=metric&APPID=${WeatherService.APPID}`).pipe(
       map(weatherConditionData => {
         return {
           zip: zipCode,
@@ -60,51 +57,60 @@ export class WeatherService {
     )
   }
 
-  addCurrentConditions(zipCode: string): Observable<WeatherCondition> {
-    return of(zipCode).pipe(
+  addCurrentConditions(weatherConditionInput: WeatherConditionInput): Observable<WeatherCondition> {
+    return of(weatherConditionInput).pipe(
       withLatestFrom(this._currentConditions$),
-      switchMap(([zipCode, weatherConditions]) => {
+      switchMap(([{zipCode, countryCode}, weatherConditions]) => {
         if(!zipCode) {
           return throwError("zipCode is undefined!");
         }
 
-        const isCityAlreadyIncluded = weatherConditions.some(condition => condition.zip === zipCode);
+        const isCityAlreadyIncluded = weatherConditions.some(condition => UtilsService.isSameWeatherLocationInput({
+            countryCode: condition.data.sys.country,
+            zipCode: condition.zip
+          }, weatherConditionInput
+        ));
+
         if(isCityAlreadyIncluded) {
           return throwError("City Already Included!");
         }
 
-        return this.retrieveWeatherConditionByZipCode(zipCode).pipe(
+        return this.retrieveWeatherCondition(zipCode, countryCode).pipe(
           map(newWeatherCondition => ({newWeatherCondition, allCurrentConditions: weatherConditions}))
         )
       }),
       map(({newWeatherCondition, allCurrentConditions}) => {
         allCurrentConditions.push(newWeatherCondition); 
         this._currentConditions$.next([...allCurrentConditions]);
-        this.locationService.addLocation(newWeatherCondition.zip);
+        this.locationService.addLocation({...weatherConditionInput});
         return newWeatherCondition;
       })
     )
   }
 
   updateCurrentConditions(newWeatherCondition: WeatherCondition)
-  updateCurrentConditions(newWeatherCondition: WeatherCondition, zipCode?: string) {
+  updateCurrentConditions(newWeatherCondition: WeatherCondition, zipCode?: string, countryCode?: string) {
     const zipCodeOfElToUpdate = zipCode || newWeatherCondition.zip;
-    if(!zipCodeOfElToUpdate) {
-      
-    }
+    const countryCodeOfElToUpdate = countryCode || newWeatherCondition.data.sys.country;
 
     let currentConditions = [...this._currentConditions$.value];
-    const weatherConditionToUpdateIdx = currentConditions.findIndex(condition => condition.zip === zipCodeOfElToUpdate);
+    const weatherConditionToUpdateIdx = currentConditions.findIndex(condition => condition.zip === zipCodeOfElToUpdate && condition.data.sys.country === countryCodeOfElToUpdate);
     currentConditions[weatherConditionToUpdateIdx] = {...currentConditions[weatherConditionToUpdateIdx], ...newWeatherCondition};
     this._currentConditions$.next(currentConditions);
   }
 
-  removeCurrentConditions(zipCodeToRemove: string): void {
-    if(zipCodeToRemove) {
+  removeCurrentConditions(weatherConditionToRemove: WeatherConditionInput): void {
+    if(weatherConditionToRemove && weatherConditionToRemove.countryCode && weatherConditionToRemove.countryCode) {
       let currentConditions = [...this._currentConditions$.value];
-      currentConditions = currentConditions.filter(condition => condition.zip !== zipCodeToRemove);
+      currentConditions = currentConditions.filter(condition => UtilsService.isSameWeatherLocationInput(
+        {
+          countryCode: condition.data.sys.country,
+          zipCode: condition.zip
+        }, 
+        weatherConditionToRemove
+      ));
       this._currentConditions$.next(currentConditions);
-      this.locationService.removeLocation(zipCodeToRemove);
+      this.locationService.removeLocation(weatherConditionToRemove);
     }
   }
 
@@ -112,9 +118,9 @@ export class WeatherService {
     return this._currentConditions$.asObservable();
   }
 
-  getForecast(zipcode: string): Observable<any> {
+  getForecast(zipcode: string, countryCode = DEFAULT_LANGUAGE): Observable<any> {
     // Here we make a request to get the forecast data from the API. Note the use of backticks and an expression to insert the zipcode
-    return this.http.get(`${WeatherService.URL}/forecast/daily?zip=${zipcode},it&units=metric&cnt=5&APPID=${WeatherService.APPID}`);
+    return this.http.get(`${WeatherService.URL}/forecast/daily?zip=${zipcode},${countryCode}&units=metric&cnt=5&APPID=${WeatherService.APPID}`);
 
   }
 
@@ -134,5 +140,6 @@ export class WeatherService {
     else
       return WeatherService.ICON_URL + "art_clear.png";
   }
+
 
 }

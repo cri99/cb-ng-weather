@@ -20,6 +20,7 @@ import { getWeatherConditionIconUrlPipe } from './get-weather-icon-url.pipe';
 import { ReactiveStatusButtonComponent } from './reactive-status-button/reactive-status-button.component';
 import { NewWeatherDataEntryContainerComponent } from './new-weather-data-entry-container/new-weather-data-entry-container.component';
 import { CountryEntryComponent } from './new-weather-data-entry-container/country-entry/country-entry.component';
+import { BoldMatchingText } from './shared/bold-search-text.pipe';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { CountryEntryComponent } from './new-weather-data-entry-container/countr
     getWeatherConditionIconUrlPipe,
     ReactiveStatusButtonComponent,
     NewWeatherDataEntryContainerComponent,
-    CountryEntryComponent
+    CountryEntryComponent,
+    BoldMatchingText
   ],
   imports: [
     BrowserModule,
