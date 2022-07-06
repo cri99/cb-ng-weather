@@ -4,11 +4,11 @@
       <input type="text" 
         [ngModel] = "countryName" (ngModelChange)="countryInputChanged($event)" 
         placeholder="Enter country name" class="form-control" 
-        (focus)="showCountryList = true" >
+        (focus)="onCountryInputFocus()" (blur)="onCountryLostFocus()"  >
   
-      <div   class="country-list" name="country" id="country" *ngIf  = "showCountryList">
+      <div class="country-list" name="country" id="country" *ngIf = "showCountryList">
         <ng-container *ngFor="let country of obs.filteredCountriesVal; let index as i" >
-          <div [tabindex]="i" class="country-list-item" (keyup.enter) = "onCountrySelected(country)" (click) = "onCountrySelected(country)">
+          <div class="country-list-item" (click) = "onCountrySelected(country)">
             <span [innerHTML] = "countryName | boldMatchingText: country.name"></span>
           </div>
         </ng-container>

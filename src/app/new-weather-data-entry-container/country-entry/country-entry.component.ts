@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Observable,Subject } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { Country } from './countries.types';
 import { CountryEntryService } from './country-entry.service';
 
@@ -12,10 +13,12 @@ import { CountryEntryService } from './country-entry.service';
 })
 export class CountryEntryComponent implements OnInit {
   countryName: string = "";
+  private _currentCountry: Country;
 
   @Input() set countryCode(newCountryCode: string){
     const countryResult = this.countryService.findCountryByCode(newCountryCode);
     if(countryResult) {
+      this._currentCountry = countryResult;
       this.countryInputChanged(countryResult.name);
     }
   }
@@ -23,18 +26,40 @@ export class CountryEntryComponent implements OnInit {
   @Output() countryCodeChange = new EventEmitter<string>();
 
   filteredCountries$: Observable<Country[]>
-  showCountryList = false;
+  showCountryList: boolean = false;
+  private _onCountryLostFocus$ = new Subject<void>();
+  private _onHideCountryList$: Observable<void>;
 
-  constructor(private countryService: CountryEntryService) { }
+  constructor(
+    private countryService: CountryEntryService, 
+    private cdr: ChangeDetectorRef
+  ) { }
 
 
   ngOnInit(): void {
+    this._onHideCountryList$ = this._onCountryLostFocus$.pipe(
+      delay(100)
+    );
+
+    this._onHideCountryList$.subscribe(() => {
+      this.countryName = this._currentCountry.name;
+      this.showCountryList = false;
+      // Triggering local change detection
+      this.cdr.detach();
+      this.cdr.detectChanges();
+      this.cdr.reattach();
+    });
+
     this.filteredCountries$ = this.countryService.getFilteredCountries$();
   }
 
 
   onCountryInputFocus() {
     this.showCountryList = true;
+  }
+
+  onCountryLostFocus() {
+    this._onCountryLostFocus$.next();
   }
 
   countryInputChanged(countryName: string) {
@@ -44,8 +69,9 @@ export class CountryEntryComponent implements OnInit {
 
   onCountrySelected(selectedCountry: Country) {
     this.countryInputChanged(selectedCountry.name);
-    this.showCountryList = false;
+    this._currentCountry = selectedCountry;
     this.countryCodeChange.emit(selectedCountry.code);
+    this.showCountryList = false;
   }
 
 }
