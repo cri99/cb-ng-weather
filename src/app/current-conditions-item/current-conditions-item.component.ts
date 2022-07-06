@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {Router} from "@angular/router";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { WeatherCondition } from 'app/weather-condition.types';
 
 @Component({
@@ -22,7 +21,8 @@ export class CurrentConditionsItemComponent {
     return this._location;
   }
 
-  removeLocation() {
-    this.onRemove.emit(this._location.zip);
+  removeLocation(event: Event) {
+    event.stopPropagation();
+    this.onRemove.emit(this._location);
   }
 }

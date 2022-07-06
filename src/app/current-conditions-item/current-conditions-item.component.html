@@ -1,4 +1,4 @@
-    <div class="well flex">
+    <div class="well flex weather-item">
       <div >
         <h3>{{location.data.name}} ({{location.zip}})</h3>
         <h4>Current conditions: {{location.data.weather[0].main}}</h4>
@@ -13,7 +13,7 @@
         </p>
       </div>
       <div>
-        <span class="close" (click)="removeLocation()">&times;</span>
+        <button class="btn btn-danger cancel-button"  (click)="removeLocation($event)"> <i class="icon bi bi-x"></i>        </button>
         <img [src]="location.data | getWeatherConditionIconUrl">
       </div>
     </div>

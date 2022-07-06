@@ -5,3 +5,20 @@
   display: flex;
   justify-content: space-between;
 }
+.weather-item {
+  position: relative;
+}
+
+.cancel-button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  margin: 0;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+}
+
+.cancel-button .icon {
+  font-size: 30px ;
+}

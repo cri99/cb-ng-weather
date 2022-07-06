@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { ZipcodeEntryComponent } from './new-weather-data-entry-container/zipcode-entry/zipcode-entry.component';
-import {LocationService} from "./location.service";
+import {WeatherConditionsStorageService} from "./location.service";
 import { ForecastsListComponent } from './forecasts-list/forecasts-list.component';
 import {WeatherService} from "./weather.service";
 import { CurrentConditionsComponent } from './current-conditions/current-conditions.component';
@@ -45,7 +45,7 @@ import { BoldMatchingText } from './shared/bold-search-text.pipe';
     routing,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [LocationService, WeatherService],
+  providers: [WeatherConditionsStorageService, WeatherService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

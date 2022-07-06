@@ -20,12 +20,17 @@ export class CurrentConditionsContainerComponent implements OnInit {
     this.currentConditions$ = this.weatherService.getCurrentConditions();
   }
 
-  showForecast(zipcode : string){
-    this.router.navigate(['/forecast', zipcode])
+  showForecast({zip, data}: WeatherCondition){
+    this.router.navigate(['/forecast', zip], {queryParams: {
+      countryCode: data.sys.country
+    }})
   }
 
-  removeLocation(zipCode: string) {
-    this.weatherService.removeCurrentConditions(zipCode);
+  removeLocation({zip, data}: WeatherCondition) {
+    this.weatherService.removeCurrentConditions({
+      zipCode: zip,
+      countryCode: data.sys.country
+    });
   }
 
 

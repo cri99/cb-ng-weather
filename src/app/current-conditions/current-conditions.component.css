@@ -5,3 +5,7 @@
   display: flex;
   justify-content: space-between;
 }
+
+.weather-condition-list-item {
+  cursor: pointer;
+}

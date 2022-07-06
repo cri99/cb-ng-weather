@@ -4,7 +4,7 @@ import {delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxj
 
 import {HttpClient} from '@angular/common/http';
 import { WeatherCondition, WeatherConditionData, WeatherConditionInput } from './weather-condition.types';
-import { LocationService } from './location.service';
+import { WeatherConditionsStorageService } from './location.service';
 import { DEFAULT_LANGUAGE } from './shared/app.constants';
 import { UtilsService } from './utils.service';
 
@@ -22,7 +22,7 @@ export class WeatherService {
 
   constructor(
     private http: HttpClient,
-    private locationService: LocationService
+    private locationService: WeatherConditionsStorageService
   ) {
     this.setupWeatherConditionsPolling();
     this.initializeSavedLocations();
@@ -102,7 +102,7 @@ export class WeatherService {
   removeCurrentConditions(weatherConditionToRemove: WeatherConditionInput): void {
     if(weatherConditionToRemove && weatherConditionToRemove.countryCode && weatherConditionToRemove.countryCode) {
       let currentConditions = [...this._currentConditions$.value];
-      currentConditions = currentConditions.filter(condition => UtilsService.isSameWeatherLocationInput(
+      currentConditions = currentConditions.filter(condition => !UtilsService.isSameWeatherLocationInput(
         {
           countryCode: condition.data.sys.country,
           zipCode: condition.zip

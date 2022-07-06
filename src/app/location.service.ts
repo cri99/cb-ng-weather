@@ -5,7 +5,7 @@ import { WeatherConditionInput } from './weather-condition.types';
 export const LOCATIONS : string = "locations";
 
 @Injectable()
-export class LocationService {
+export class WeatherConditionsStorageService {
 
   private _locations : WeatherConditionInput[] = [];
   

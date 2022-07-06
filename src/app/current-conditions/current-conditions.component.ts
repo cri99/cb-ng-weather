@@ -25,15 +25,15 @@ export class CurrentConditionsComponent {
   constructor() {
   }
 
-  showForecast(zipcode : string){
-    this.onShowForecast.emit(zipcode);
+  showForecast(weatherCondition : WeatherCondition){
+    this.onShowForecast.emit(weatherCondition);
   }
 
-  removeLocation(zipCode: string) {
-    this.onRemoveWeatherCondition.emit(zipCode);
+  removeLocation(weatherCondition : WeatherCondition) {
+    this.onRemoveWeatherCondition.emit(weatherCondition);
   }
 
   weatherConditionTrackByFn: TrackByFunction<WeatherCondition> = (index, weatherCondition) => {
-    return weatherCondition.zip;
+    return weatherCondition.data.id;
   }
 }
