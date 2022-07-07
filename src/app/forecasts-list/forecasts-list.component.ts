@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import {WeatherService} from '../weather.service';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import { WeatherService } from 'app/shared/weathers/weather.service';
 import { Observable } from 'rxjs';
 import { switchMap, withLatestFrom } from 'rxjs/operators';
 
@@ -10,20 +10,23 @@ import { switchMap, withLatestFrom } from 'rxjs/operators';
   styleUrls: ['./forecasts-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ForecastsListComponent {
+export class ForecastsListComponent implements OnInit {
 
   forecast$: Observable<any>;
 
-  constructor(private weatherService: WeatherService, route : ActivatedRoute) {
-
-    this.forecast$ = route.params.pipe(
-      withLatestFrom(route.queryParams),
+  constructor(private weatherService: WeatherService, private route : ActivatedRoute) {}
+  
+  ngOnInit(): void {
+    this.forecast$ = this.route.params.pipe(
+      withLatestFrom(this.route.queryParams),
       switchMap(([routeParams, queryParams]) => {
         const zipcode = routeParams['zipcode'];
         const countryCode = queryParams['countryCode'];
 
-        return weatherService.getForecast(zipcode, countryCode);
+        return this.weatherService.getForecast(zipcode, countryCode);
       })
     );
   }
+
+  
 }

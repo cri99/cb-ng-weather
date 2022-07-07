@@ -8,8 +8,11 @@ import { WeatherService } from "./weather.service";
 export class getWeatherConditionIconUrlPipe implements PipeTransform {
     constructor(private weatherService: WeatherService) {}
 
-    transform(weatherConditionData: WeatherConditionData, ...args: any[]): string {
-        return this.weatherService.getWeatherIcon(weatherConditionData.weather[0].id); 
+    transform(weatherConditionData: WeatherConditionData): string {
+        if(weatherConditionData?.weather?.length) {
+            return this.weatherService.getWeatherIcon(weatherConditionData.weather[0].id); 
+        }
+        return "";
     }
     
 }

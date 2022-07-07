@@ -1,26 +1,26 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from "@angular/common/http";
+import { NgModule } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { RouterModule } from "@angular/router";
+import { ServiceWorkerModule } from "@angular/service-worker";
+import { environment } from "environments/environment";
+import { AppComponent } from "./app.component";
+import { routing } from "./app.routing";
+import { ForecastsListComponent } from "./forecasts-list/forecasts-list.component";
+import { CurrentConditionsContainerComponent } from "./main-page/current-conditions-container/current-conditions-container.component";
+import { CurrentConditionsItemComponent } from "./main-page/current-conditions-container/current-conditions/current-conditions-item/current-conditions-item.component";
+import { CurrentConditionsComponent } from "./main-page/current-conditions-container/current-conditions/current-conditions.component";
+import { MainPageComponent } from "./main-page/main-page.component";
+import { CountryEntryComponent } from "./main-page/new-weather-data-entry-container/country-entry/country-entry.component";
+import { NewWeatherDataEntryContainerComponent } from "./main-page/new-weather-data-entry-container/new-weather-data-entry-container.component";
+import { ZipcodeEntryComponent } from "./main-page/new-weather-data-entry-container/zipcode-entry/zipcode-entry.component";
+import { ReactiveStatusButtonComponent } from "./shared/commons/components/reactive-status-button/reactive-status-button.component";
+import { BoldMatchingText } from "./shared/commons/pipes/bold-search-text.pipe";
+import { getWeatherConditionIconUrlPipe } from "./shared/weathers/get-weather-icon-url.pipe";
+import { WeatherConditionsStorageService } from "./shared/weathers/location.service";
+import { WeatherService } from "./shared/weathers/weather.service";
 
-import { AppComponent } from './app.component';
-import { ZipcodeEntryComponent } from './new-weather-data-entry-container/zipcode-entry/zipcode-entry.component';
-import {WeatherConditionsStorageService} from "./location.service";
-import { ForecastsListComponent } from './forecasts-list/forecasts-list.component';
-import {WeatherService} from "./weather.service";
-import { CurrentConditionsComponent } from './current-conditions/current-conditions.component';
-import { MainPageComponent } from './main-page/main-page.component';
-import {RouterModule} from "@angular/router";
-import {routing} from "./app.routing";
-import {HttpClientModule} from "@angular/common/http";
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
-import { CurrentConditionsItemComponent } from './current-conditions-item/current-conditions-item.component';
-import { CurrentConditionsContainerComponent } from './current-conditions-container/current-conditions-container.component';
-import { getWeatherConditionIconUrlPipe } from './get-weather-icon-url.pipe';
-import { ReactiveStatusButtonComponent } from './reactive-status-button/reactive-status-button.component';
-import { NewWeatherDataEntryContainerComponent } from './new-weather-data-entry-container/new-weather-data-entry-container.component';
-import { CountryEntryComponent } from './new-weather-data-entry-container/country-entry/country-entry.component';
-import { BoldMatchingText } from './shared/bold-search-text.pipe';
 
 @NgModule({
   declarations: [

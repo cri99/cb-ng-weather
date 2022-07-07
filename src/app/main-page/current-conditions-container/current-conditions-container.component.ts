@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import {WeatherService} from "../weather.service";
 import {Router} from "@angular/router";
 import { Observable } from 'rxjs';
-import { WeatherCondition } from 'app/weather-condition.types';
+import { WeatherCondition } from 'app/shared/weathers/weather-condition.types';
+import { WeatherService } from 'app/shared/weathers/weather.service';
 
 @Component({
   selector: 'app-current-conditions-container',

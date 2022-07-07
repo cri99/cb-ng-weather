@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable,Subject } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, filter } from 'rxjs/operators';
 import { Country } from './countries.types';
 import { CountryEntryService } from './country-entry.service';
 
@@ -38,6 +38,7 @@ export class CountryEntryComponent implements OnInit {
 
   ngOnInit(): void {
     this._onHideCountryList$ = this._onCountryLostFocus$.pipe(
+      filter(() => this.showCountryList === true),
       delay(100)
     );
 

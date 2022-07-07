@@ -8,7 +8,7 @@ import { WeatherConditionInput } from "./weather-condition.types";
 export class UtilsService {
 
   static isSameWeatherLocationInput(weatherConditionInputA: WeatherConditionInput, weatherConditionInputB: WeatherConditionInput): boolean {
-    return weatherConditionInputA.countryCode === weatherConditionInputB.countryCode && weatherConditionInputA.zipCode === weatherConditionInputB.zipCode; 
+    return weatherConditionInputA.countryCode.toLowerCase() === weatherConditionInputB.countryCode.toLowerCase() && weatherConditionInputA.zipCode === weatherConditionInputB.zipCode; 
   }
 
 }

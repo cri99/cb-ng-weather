@@ -11,13 +11,13 @@ import { filter,delay, mapTo, skip } from "rxjs/operators";
 export class ReactiveStatusButtonComponent implements OnInit {
     readonly BUTTON_STATUS = BUTTON_STATUS;
 
-    @Input() asyncTaskFn: () => Observable<any> = () => of(void 0);
+    @Input() asyncTaskFn: (...params: any[]) => Observable<any> = () => of(void 0);
     @Output() statusChange = new EventEmitter<ButtonStatus>();
 
     currentStatus$: BehaviorSubject<ButtonStatus> = new BehaviorSubject<ButtonStatus>(BUTTON_STATUS.DEFAULT);
     onDoneStatus$: Observable<void>;
 
-
+    @Input() doneStatusDuration = 500;
 
     @Input() defaultContent: TemplateRef<any>;
     @Input() workingContent: TemplateRef<any>;
@@ -35,7 +35,7 @@ export class ReactiveStatusButtonComponent implements OnInit {
         );
         
         this.onDoneStatus$.pipe(
-            delay(500)
+            delay(this.doneStatusDuration)
         ).subscribe(() => {
             this.changeCurrentStatus(BUTTON_STATUS.DEFAULT);
         });
@@ -43,8 +43,6 @@ export class ReactiveStatusButtonComponent implements OnInit {
         this.currentStatus$.asObservable().pipe(skip(1)).subscribe(newStatus => {
             this.statusChange.emit(newStatus);
         });
-
-    
     }
 
     executeTask(): void {

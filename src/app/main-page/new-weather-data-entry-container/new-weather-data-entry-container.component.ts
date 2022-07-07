@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DEFAULT_LANGUAGE } from 'app/shared/app.constants';
-import { WeatherConditionInput } from 'app/weather-condition.types';
-import { WeatherService } from 'app/weather.service';
+import { DEFAULT_LANGUAGE } from 'app/shared/commons/app.constants';
+import { WeatherConditionInput } from 'app/shared/weathers/weather-condition.types';
+import { WeatherService } from 'app/shared/weathers/weather.service';
 import { tap } from 'rxjs/operators';
 
 @Component({

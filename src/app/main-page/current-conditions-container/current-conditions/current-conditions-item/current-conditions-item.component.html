@@ -14,7 +14,7 @@
       </div>
       <div>
         <button class="btn btn-danger cancel-button"  (click)="removeLocation($event)"> <i class="icon bi bi-x"></i>        </button>
-        <img [src]="location.data | getWeatherConditionIconUrl">
+        <img class = "weather-image" [src]="location.data | getWeatherConditionIconUrl">
       </div>
     </div>
     

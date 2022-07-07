@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { WeatherCondition } from 'app/weather-condition.types';
+import { WeatherCondition } from 'app/shared/weathers/weather-condition.types';
 
 @Component({
   selector: 'app-current-conditions-item',

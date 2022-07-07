@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, from, interval, Observable, of, OperatorFunction, Subject, throwError} from 'rxjs';
-import {delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import {BehaviorSubject, from, interval, Observable, of, throwError} from 'rxjs';
+import {map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import {HttpClient} from '@angular/common/http';
-import { WeatherCondition, WeatherConditionData, WeatherConditionInput } from './weather-condition.types';
 import { WeatherConditionsStorageService } from './location.service';
-import { DEFAULT_LANGUAGE } from './shared/app.constants';
-import { UtilsService } from './utils.service';
+import { DEFAULT_LANGUAGE } from '../commons/app.constants';
+import { WeatherCondition, WeatherConditionData, WeatherConditionInput } from './weather-condition.types';
+import { UtilsService } from './weathers-utils.service';
 
 @Injectable()
 export class WeatherService {
 
-  static URL = 'http://api.openweathermap.org/data/2.5';
-  static APPID = '5a4b2d457ecbef9eb2a71e480b947604';
-  static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
-  
-  private static POLLING_RATE = 60 * 1000;
+  static readonly URL = 'http://api.openweathermap.org/data/2.5';
+  static readonly APPID = '5a4b2d457ecbef9eb2a71e480b947604';
+  static readonly ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
+   
+  private static readonly POLLING_RATE = 30 * 1000;
 
 
   private _currentConditions$ = new BehaviorSubject<WeatherCondition[]>([]);
@@ -28,25 +28,25 @@ export class WeatherService {
     this.initializeSavedLocations();
   }
 
-  private initializeSavedLocations() {
+  private initializeSavedLocations(): void {
     from(this.locationService.locations)
       .pipe(
         mergeMap(zipcode => this.addCurrentConditions(zipcode))
       ).subscribe();
   }
 
-  private setupWeatherConditionsPolling() {
+  private setupWeatherConditionsPolling(): void {
     interval(WeatherService.POLLING_RATE).pipe(
       withLatestFrom(this._currentConditions$),
       switchMap(([_, conditions]) => conditions),
-      mergeMap((({zip, data}) => this.retrieveWeatherCondition(zip, data.sys.country)))
+      mergeMap((({zip, data}) => this.loadWeatherCondition(zip, data.sys.country)))
     ).subscribe(newWeatherCondition => {
       this.updateCurrentConditions(newWeatherCondition);
     });
   }
 
 
-  private retrieveWeatherCondition(zipCode: string, countryCode = DEFAULT_LANGUAGE): Observable<WeatherCondition> {
+  private loadWeatherCondition(zipCode: string, countryCode = DEFAULT_LANGUAGE): Observable<WeatherCondition> {
     return this.http.get<WeatherConditionData>(`${WeatherService.URL}/weather?zip=${zipCode},${countryCode}&units=metric&APPID=${WeatherService.APPID}`).pipe(
       map(weatherConditionData => {
         return {
@@ -62,7 +62,7 @@ export class WeatherService {
       withLatestFrom(this._currentConditions$),
       switchMap(([{zipCode, countryCode}, weatherConditions]) => {
         if(!zipCode) {
-          return throwError("zipCode is undefined!");
+          return throwError("errors.weatherService.zipCodeUndefined");
         }
 
         const isCityAlreadyIncluded = weatherConditions.some(condition => UtilsService.isSameWeatherLocationInput({
@@ -72,10 +72,10 @@ export class WeatherService {
         ));
 
         if(isCityAlreadyIncluded) {
-          return throwError("City Already Included!");
+          return throwError("errors.weatherService.cityAlreadyAdded");
         }
 
-        return this.retrieveWeatherCondition(zipCode, countryCode).pipe(
+        return this.loadWeatherCondition(zipCode, countryCode).pipe(
           map(newWeatherCondition => ({newWeatherCondition, allCurrentConditions: weatherConditions}))
         )
       }),
@@ -89,7 +89,7 @@ export class WeatherService {
   }
 
   updateCurrentConditions(newWeatherCondition: WeatherCondition)
-  updateCurrentConditions(newWeatherCondition: WeatherCondition, zipCode?: string, countryCode?: string) {
+  updateCurrentConditions(newWeatherCondition: WeatherCondition, zipCode?: string, countryCode?: string): void {
     const zipCodeOfElToUpdate = zipCode || newWeatherCondition.zip;
     const countryCodeOfElToUpdate = countryCode || newWeatherCondition.data.sys.country;
 
