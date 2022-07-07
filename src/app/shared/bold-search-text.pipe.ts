@@ -9,12 +9,21 @@ export class BoldMatchingText implements PipeTransform {
 
     constructor(private domSanitizer: DomSanitizer) {}
 
-    transform(matchString: string, args: string): any {
-        if (!matchString) { 
-            return args; 
+    transform(searchString: string, allString: string): any {
+        if (!searchString) { 
+            return allString; 
+        } else if(!allString) {
+            return "";
         }
-        const regEx = new RegExp(matchString, 'gi'); 
-        const res = args.replace(regEx, "<strong>" + matchString + "</strong>");
-        return this.domSanitizer.bypassSecurityTrustHtml(res);
+        const idxOfMatchString = allString.toLowerCase().indexOf(searchString.toLowerCase());
+        if(idxOfMatchString !== -1) {
+            const matchingString = allString.substring(idxOfMatchString, idxOfMatchString + searchString.length);
+            const regEx = new RegExp(matchingString, 'gi'); 
+            const res = allString.replace(regEx, "<strong>" + matchingString + "</strong>");
+            return this.domSanitizer.bypassSecurityTrustHtml(res);
+        } 
+
+        return allString;
+        
     }
 }
