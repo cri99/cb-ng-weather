@@ -1,42 +1,52 @@
-<div class="well weather-data-entry-container">
-
-  <div class="weather-data-entry-item">
-    <!-- Country Input -->
-    <app-country-entry [(countryCode)]="newWeatherDataEntry.countryCode"></app-country-entry>
+<div class="well">
+  <div class="weather-data-entry-container">
+    <div class="weather-data-entry-item">
+      <!-- Country Input -->
+      <app-country-entry [(countryCode)]="newWeatherDataEntry.countryCode"></app-country-entry>
+    </div>
+  
+    <div class="weather-data-entry-item">
+      <!-- Zip Code Input -->
+      <app-zipcode-entry [(zipCode)]="newWeatherDataEntry.zipCode"></app-zipcode-entry>
+    </div>
+  
+  
+  
+    <div class="weather-data-entry-item">
+      <app-reactive-status-button [asyncTaskFn]="addLocationFn" [defaultContent]="defaultContent"
+        [workingContent]="workingContent" [doneContent]="doneContent" (statusChange)="onButtonStatusChanged($event)">
+      </app-reactive-status-button>
+    </div>
+  
+  
+  
+  
+    
+    <ng-template #defaultContent>
+      <button class="btn btn-primary" [disabled]="!newWeatherDataEntry.zipCode || !newWeatherDataEntry.countryCode">Add Location</button>
+    </ng-template>
+  
+    <ng-template #workingContent>
+      <button class="btn btn-primary" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Adding...
+      </button>
+    </ng-template>
+  
+    <ng-template #doneContent>
+      <button class="btn btn-success"> <i class="bi bi-check2-circle"></i> Done!</button>
+    </ng-template>
+  
   </div>
-
-  <div class="weather-data-entry-item">
-    <!-- Zip Code Input -->
-    <app-zipcode-entry [(zipCode)]="newWeatherDataEntry.zipCode"></app-zipcode-entry>
-  </div>
-
-
-
-  <div class="weather-data-entry-item">
-    <app-reactive-status-button [asyncTaskFn]="addLocationFn" [defaultContent]="defaultContent"
-      [workingContent]="workingContent" [doneContent]="doneContent" (statusChange)="onButtonStatusChanged($event)">
-    </app-reactive-status-button>
-  </div>
-
 
   
-  <ng-template #defaultContent>
-    <button class="btn btn-primary" [disabled]="!newWeatherDataEntry.zipCode || !newWeatherDataEntry.countryCode">Add Location</button>
-  </ng-template>
-
-  <ng-template #workingContent>
-    <button class="btn btn-primary" disabled>
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Adding...
-    </button>
-  </ng-template>
-
-  <ng-template #doneContent>
-    <button class="btn btn-success"> <i class="bi bi-check2-circle"></i> Done!</button>
-  </ng-template>
 
 
-
-
+  <div class = "warning-container" *ngIf = "weatherServiceError">
+    <div class="alert alert-{{weatherServiceError.level === 'error' ? 'danger' : 'warning'}}" role="alert">
+      {{weatherServiceError.message | titlecase}}
+    </div>
+  </div>
 
 </div>
+

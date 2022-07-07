@@ -13,6 +13,7 @@
           - Min: {{dailyForecast.temp.min | number:'.0-0'}}
           - Max: {{dailyForecast.temp.max | number:'.0-0'}}
   
+          <!-- Weather Icon Image -->
           <img [src]="dailyForecast | getWeatherConditionIconUrl" class="icon">
         </li>
       </ul>

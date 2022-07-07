@@ -9,20 +9,18 @@ import { WeatherCondition } from 'app/shared/weathers/weather-condition.types';
 })
 export class CurrentConditionsItemComponent {
 
-  private _location: WeatherCondition;
 
-  @Input() set weatherCondition(newWeatherCondition: WeatherCondition) {
-    this._location = newWeatherCondition;
-  } 
-
+  @Input() weatherCondition: WeatherCondition
+  
+  /**
+   * Event emitted when users wants to remove current weather condition item
+   */
   @Output() onRemove = new EventEmitter();
   
-  get location () {
-    return this._location;
-  }
-
   removeLocation(event: Event) {
+    // Since all item element is clickable, we need to stop click event propagation, 
+    // otherwise navigation to the current forecast is activated
     event.stopPropagation();
-    this.onRemove.emit(this._location);
+    this.onRemove.emit(this.weatherCondition);
   }
 }

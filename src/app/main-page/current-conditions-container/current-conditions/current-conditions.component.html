@@ -1,5 +1,8 @@
 <div>
-  <div class = "weather-condition-list-item" *ngFor="let location  of currentConditions;  trackBy: weatherConditionTrackByFn" (click)="showForecast(location)">
+  <div class = "weather-condition-list-item" 
+      *ngFor="let location  of currentConditions;  trackBy: weatherConditionTrackByFn" 
+      (click)="showForecast(location)">
+    
     <app-current-conditions-item
       [weatherCondition] = "location"
       (onRemove) = "removeLocation($event)"

@@ -9,6 +9,9 @@ import { WeatherService } from 'app/shared/weathers/weather.service';
   templateUrl: './current-conditions-container.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+/**
+ * Smart componet for current wheater conditions list
+ */
 export class CurrentConditionsContainerComponent implements OnInit {
 
   currentConditions$: Observable<WeatherCondition[]>;
@@ -21,6 +24,7 @@ export class CurrentConditionsContainerComponent implements OnInit {
   }
 
   showForecast({zip, data}: WeatherCondition){
+    // Execute route navigation to forecast page with zip code as route params and country code as query params
     this.router.navigate(['/forecast', zip], {queryParams: {
       countryCode: data.sys.country
     }})

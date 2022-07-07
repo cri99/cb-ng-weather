@@ -1,20 +1,25 @@
     <div class="well flex weather-item">
       <div >
-        <h3>{{location.data.name}} ({{location.zip}})</h3>
-        <h4>Current conditions: {{location.data.weather[0].main}}</h4>
+        <h3>{{weatherCondition.data.name}} ({{weatherCondition.zip}})</h3>
+        <h4>Current conditions: {{weatherCondition.data.weather[0].main}}</h4>
         <h4>Temperatures today:</h4>
         <p>
-          Current {{location.data.main.temp | number:'.0-0'}}°
-          - Max {{location.data.main.temp_max | number:'.0-0'}}°
-          - Min {{location.data.main.temp_min | number:'.0-0'}}°
+          Current {{weatherCondition.data.main.temp | number:'.0-0'}}°
+          - Max {{weatherCondition.data.main.temp_max | number:'.0-0'}}°
+          - Min {{weatherCondition.data.main.temp_min | number:'.0-0'}}°
         </p>
         <p>
-          <a [routerLink]="['/forecast', location.zip]"  [queryParams]="{ countryCode: location.data.sys.country }" >Show 5-day forecast for {{location.data.name}}</a>
+          <!-- Link to forecast 5-day forecast list -->
+          <a  [routerLink]="['/forecast', weatherCondition.zip]"  
+              [queryParams]="{ countryCode: weatherCondition.data.sys.country }">Show 5-day forecast for {{weatherCondition.data.name}}</a>
         </p>
       </div>
       <div>
-        <button class="btn btn-danger cancel-button"  (click)="removeLocation($event)"> <i class="icon bi bi-x"></i>        </button>
-        <img class = "weather-image" [src]="location.data | getWeatherConditionIconUrl">
+        <!-- Remove Location Icon Button -->
+        <button class="btn btn-danger cancel-button"  (click)="removeLocation($event)"> <i class="icon bi bi-x"></i></button>
+
+        <!-- Weather Icon Image -->
+        <img class = "weather-image" [src]="weatherCondition.data | getWeatherConditionIconUrl">
       </div>
     </div>
     

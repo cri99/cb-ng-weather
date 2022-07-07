@@ -9,21 +9,22 @@ import { WeatherCondition } from 'app/shared/weathers/weather-condition.types';
 })
 export class CurrentConditionsComponent {
 
+  /**
+   * Event emitted when user wants to see forecast on some Weather Condition Item  
+   */
   @Output() onShowForecast = new EventEmitter();
+
+  /**
+   * Event emitted when user wants to remove some Weather Condition Item  
+   */
   @Output() onRemoveWeatherCondition = new EventEmitter();
 
-  private _currentConditions: WeatherCondition[];
+  /**
+   * Lists of current weather conditions
+   */
+  @Input() currentConditions: WeatherCondition[];
 
-  @Input() set currentConditions (newWeatherConditions: WeatherCondition[]) {
-    this._currentConditions = newWeatherConditions;  
-  }
-
-  get currentConditions() {
-    return this._currentConditions;
-  }
-
-  constructor() {
-  }
+  constructor() {}
 
   showForecast(weatherCondition : WeatherCondition){
     this.onShowForecast.emit(weatherCondition);

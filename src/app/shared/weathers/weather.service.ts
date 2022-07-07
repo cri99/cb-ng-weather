@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, from, interval, Observable, of, throwError} from 'rxjs';
-import {map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
+import {catchError, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import {HttpClient} from '@angular/common/http';
 import { WeatherConditionsStorageService } from './location.service';
 import { DEFAULT_LANGUAGE } from '../commons/app.constants';
 import { WeatherCondition, WeatherConditionData, WeatherConditionInput } from './weather-condition.types';
 import { UtilsService } from './weathers-utils.service';
+import { GenericError } from '../commons/app.types';
 
 @Injectable()
 export class WeatherService {
@@ -53,6 +54,10 @@ export class WeatherService {
           zip: zipCode,
           data: weatherConditionData
         };
+      }),
+      catchError(err => {
+        const loadWeatherConditionError: GenericError = {level: 'error', message: err.error.message};
+        return throwError(loadWeatherConditionError); 
       })
     )
   }
@@ -62,7 +67,8 @@ export class WeatherService {
       withLatestFrom(this._currentConditions$),
       switchMap(([{zipCode, countryCode}, weatherConditions]) => {
         if(!zipCode) {
-          return throwError("errors.weatherService.zipCodeUndefined");
+          const zipCodeUndefinedError: GenericError = {level: 'error', message: "Zip Code is undefined"}
+          return throwError(zipCodeUndefinedError);
         }
 
         const isCityAlreadyIncluded = weatherConditions.some(condition => UtilsService.isSameWeatherLocationInput({
@@ -72,7 +78,8 @@ export class WeatherService {
         ));
 
         if(isCityAlreadyIncluded) {
-          return throwError("errors.weatherService.cityAlreadyAdded");
+          const cityAlreadyAddedWarning: GenericError = {level: 'warning', message: "City already added"}
+          return throwError(cityAlreadyAddedWarning);
         }
 
         return this.loadWeatherCondition(zipCode, countryCode).pipe(
@@ -140,6 +147,5 @@ export class WeatherService {
     else
       return WeatherService.ICON_URL + "art_clear.png";
   }
-
 
 }

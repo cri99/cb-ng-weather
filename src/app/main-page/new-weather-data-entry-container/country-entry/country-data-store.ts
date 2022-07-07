@@ -1,5 +1,8 @@
 import { Country } from "./countries.types";
 
+/**
+ * List of all available countries
+ */
 export const ALL_COUNTRIES: Country [] = [
     { code: "AF", code3: "AFG", name: "Afghanistan", number: "004" },
     { code: "AL", code3: "ALB", name: "Albania", number: "008" },

@@ -2,9 +2,9 @@
     <div class="country-entry-container" >
       <h2>Enter a Country:</h2>
       <input type="text" 
-        [ngModel] = "countryName" (ngModelChange)="countryInputChanged($event)" 
+        [ngModel] = "countryName" (ngModelChange)="selectedCountryChanged($event)" 
         placeholder="Enter country name" class="form-control" 
-        (focus)="onCountryInputFocus()" (blur)="onCountryLostFocus()"  >
+        (focus)="onCountryInputFocus()" (blur)="onCountryInputLostFocus()"  >
   
       <div class="country-list" name="country" id="country" *ngIf = "showCountryList">
         <ng-container *ngFor="let country of obs.filteredCountriesVal" >
