@@ -13,19 +13,23 @@
   
   
     <div class="weather-data-entry-item">
-      <app-reactive-status-button [asyncTaskFn]="addLocationFn" [defaultContent]="defaultContent"
-        [workingContent]="workingContent" [doneContent]="doneContent" (statusChange)="onButtonStatusChanged($event)">
+      <!-- Reactive status button used for adding new weather condition location -->
+      <app-reactive-status-button [asyncTaskFn]="addLocationFn" 
+        [defaultContent]="defaultContent"
+        [workingContent]="workingContent" 
+        [doneContent]="doneContent" 
+        (statusChange)="onButtonStatusChanged($event)">
       </app-reactive-status-button>
     </div>
   
   
   
-  
-    
+    <!-- Default content of reactive status button -->
     <ng-template #defaultContent>
       <button class="btn btn-primary" [disabled]="!newWeatherDataEntry.zipCode || !newWeatherDataEntry.countryCode">Add Location</button>
     </ng-template>
   
+    <!-- Working content of reactive status button -->
     <ng-template #workingContent>
       <button class="btn btn-primary" disabled>
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -33,6 +37,7 @@
       </button>
     </ng-template>
   
+    <!-- Done content of reactive status button -->
     <ng-template #doneContent>
       <button class="btn btn-success"> <i class="bi bi-check2-circle"></i> Done!</button>
     </ng-template>

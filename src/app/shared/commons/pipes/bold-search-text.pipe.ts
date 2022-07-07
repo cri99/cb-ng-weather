@@ -4,7 +4,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Pipe({
     name: 'boldMatchingText'
 })
-
 export class BoldMatchingText implements PipeTransform {
 
     constructor(private domSanitizer: DomSanitizer) {}

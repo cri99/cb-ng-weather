@@ -3,8 +3,8 @@ import { DEFAULT_LANGUAGE } from 'app/shared/commons/app.constants';
 import { GenericError } from 'app/shared/commons/app.types';
 import { WeatherConditionInput } from 'app/shared/weathers/weather-condition.types';
 import { WeatherService } from 'app/shared/weathers/weather.service';
-import { EMPTY, throwError } from 'rxjs';
-import { catchError, finalize, tap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-new-weather-data-entry-container',
@@ -35,6 +35,7 @@ export class NewWeatherDataEntryContainerComponent {
         this.newWeatherDataEntry.zipCode = "";
         this.weatherServiceError = undefined;
       }),
+      // Minimal error handling... 
       catchError(err => {
         if(err.message && err.level) {
           this.weatherServiceError = err; 
