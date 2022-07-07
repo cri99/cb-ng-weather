@@ -31,6 +31,7 @@ export class NewWeatherDataEntryContainerComponent {
   addLocationFn = () => {
     return this.weatherService.addCurrentConditions(this.newWeatherDataEntry).pipe(
       tap(() => {
+        // Reset zip code and error message if adding operations is successfull
         this.newWeatherDataEntry.zipCode = "";
         this.weatherServiceError = undefined;
       }),
