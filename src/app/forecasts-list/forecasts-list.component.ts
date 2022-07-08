@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import { Forecast, WeatherConditionInput } from 'app/shared/weathers/weather-condition.types';
-import { WeatherService } from 'app/shared/weathers/weather.service';
+import { Forecast, WeatherConditionInput } from '@shared/weathers/weather-condition.types';
+import { WeatherService } from '@shared/weathers/weather.service';
 import { Observable } from 'rxjs';
 import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 

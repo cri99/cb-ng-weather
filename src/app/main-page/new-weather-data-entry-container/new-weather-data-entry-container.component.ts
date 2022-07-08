@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DEFAULT_COUNTRY_CODE } from 'app/shared/commons/app.constants';
-import { GenericError } from 'app/shared/commons/app.types';
-import { WeatherConditionInput } from 'app/shared/weathers/weather-condition.types';
-import { WeatherService } from 'app/shared/weathers/weather.service';
+import { DEFAULT_COUNTRY_CODE } from '@shared/commons/app.constants';
+import { GenericError } from '@shared/commons/app.types';
+import { WeatherConditionInput } from '@shared/weathers/weather-condition.types';
+import { WeatherService } from '@shared/weathers/weather.service';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
