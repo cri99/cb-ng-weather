@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DEFAULT_LANGUAGE } from 'app/shared/commons/app.constants';
+import { DEFAULT_COUNTRY_CODE } from 'app/shared/commons/app.constants';
 import { GenericError } from 'app/shared/commons/app.types';
 import { WeatherConditionInput } from 'app/shared/weathers/weather-condition.types';
 import { WeatherService } from 'app/shared/weathers/weather.service';
@@ -19,7 +19,7 @@ export class NewWeatherDataEntryContainerComponent {
 
   newWeatherDataEntry : WeatherConditionInput = {
     zipCode: "",
-    countryCode: DEFAULT_LANGUAGE
+    countryCode: DEFAULT_COUNTRY_CODE
   };
 
   weatherServiceError: GenericError;

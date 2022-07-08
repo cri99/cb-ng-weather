@@ -26,7 +26,7 @@ export class ForecastsListComponent implements OnInit {
         countryCode: queryParams['countryCode']
     } as WeatherConditionInput)), // Remapping params to WeatherConditionInput format
       // finally retrieving data and initiliazing forecast$ observable with Zip Code and Country Code
-      switchMap(({zipCode, countryCode}) => this.weatherService.getForecast(zipCode, countryCode))
+      switchMap(({zipCode, countryCode}) => this.weatherService.loadForecast(zipCode, countryCode))
     );
   }
 

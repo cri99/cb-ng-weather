@@ -20,10 +20,19 @@ export class WeatherConditionsStorageService {
     return this._locations;
   }
 
+  /**
+   * Indicate if weather condition input is already saved in current saved locations
+   * @param newWeatherConditionInput 
+   * @returns 
+   */
   private isLocationAlreadyPresent(newWeatherConditionInput: WeatherConditionInput): boolean {
     return this.locations.some(location => UtilsService.isSameWeatherLocationInput(location, newWeatherConditionInput))
   }
 
+  /**
+   * Save WeatherConditionInput (zip code and country code) on storage
+   * @param newWeatherConditionInput 
+   */
   addLocation(newWeatherConditionInput: WeatherConditionInput){
     if(newWeatherConditionInput && !this.isLocationAlreadyPresent(newWeatherConditionInput)) {
       this.locations.push(newWeatherConditionInput);
@@ -31,6 +40,10 @@ export class WeatherConditionsStorageService {
     }
   }
 
+  /**
+   * Remove saved WeatherConditionInput from storage
+   * @param weatherConditionToRemove 
+   */
   removeLocation(weatherConditionToRemove: WeatherConditionInput){
     let index = this.locations.findIndex(currentValue => UtilsService.isSameWeatherLocationInput(currentValue, weatherConditionToRemove));
     if (index !== -1){
